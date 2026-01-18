@@ -1,6 +1,4 @@
-/* script.js */
-
-// Les images sont à la racine (B1.png, D1.png, etc.)
+// Directions et animations perso
 const config = {
     ArrowRight: { prefix: 'D', moveX: -10, moveY: 0 },
     ArrowLeft:  { prefix: 'G', moveX: 10,  moveY: 0 },
@@ -16,27 +14,33 @@ let intervalId = null;
 let currentDirectionKey = 'ArrowDown';
 let isFast = false;
 
-// Positions du décor
-let bgPosX = 0;
-let bgPosY = 0;
+// Positions décor
+let posBack = 0;
+let posMid = 0;
+let posFront = 0;
 
 const imgElement = document.getElementById('perso-img');
-const bgElement = document.getElementById('background');
+const back = document.querySelector('.back');
+const mid = document.querySelector('.mid');
+const front = document.querySelector('.front');
 
 function updateAll() {
     const dir = config[currentDirectionKey];
-    
-    // 1. Animation du personnage
+
+    // Animation personnage
     imgElement.src = `${dir.prefix}${currentFrame}.png`;
     currentFrame = (currentFrame % 4) + 1;
 
-    // 2. Déplacement du décor (Parallaxe)
-    // On multiplie le mouvement si on est en mode rapide
     const multiplier = isFast ? 3 : 1;
-    bgPosX += dir.moveX * multiplier;
-    bgPosY += dir.moveY * multiplier;
 
-    bgElement.style.backgroundPosition = `${bgPosX}px ${bgPosY}px`;
+    // Parallax (vitesses différentes)
+    posBack  += dir.moveX * 0.2 * multiplier;
+    posMid   += dir.moveX * 0.5 * multiplier;
+    posFront += dir.moveX * 1.0 * multiplier;
+
+    back.style.backgroundPositionX  = posBack + "px";
+    mid.style.backgroundPositionX   = posMid + "px";
+    front.style.backgroundPositionX = posFront + "px";
 }
 
 function startAnimation(speed) {
@@ -65,5 +69,5 @@ document.addEventListener('keyup', (e) => {
     }
 });
 
-// Lancement automatique
+// Lancement
 startAnimation(VITESSE_LENTE);
